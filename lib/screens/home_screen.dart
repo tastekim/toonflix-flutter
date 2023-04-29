@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toonflix_flutter/services/api_service.dart';
+import 'package:toonflix_flutter/widgets/webtoon_widget.dart';
 
 import '../models/webtoon_model.dart';
 
@@ -28,15 +29,11 @@ class HomeScreen extends StatelessWidget {
         future: webtoons,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return ListView.separated(
-              separatorBuilder:  (context, index) => const SizedBox(width: 20),
-              itemBuilder: (context, index) {
-                print(index);
-                final webtoon = snapshot.data![index];
-                return Text(webtoon.title);
-              },
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.length,
+            return Column(
+              children: [
+                SizedBox(height: 50),
+                Expanded(child: makeList(snapshot))
+              ],
             );
           }
           return const Center(
@@ -44,6 +41,21 @@ class HomeScreen extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
+    return ListView.separated(
+      separatorBuilder: (context, index) => const SizedBox(width: 40),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      itemBuilder: (context, index) {
+        print(index);
+        final webtoon = snapshot.data![index];
+        return Webtoon(
+            thumb: webtoon.thumb, title: webtoon.title, id: webtoon.id);
+      },
+      scrollDirection: Axis.horizontal,
+      itemCount: snapshot.data!.length,
     );
   }
 }
